@@ -67,22 +67,22 @@ body {
 .rail-center {
   width: 2px;
   height: 60px;
-  background-color: #666;
+  background-color: #000000;
   margin: 0 10px;
 }
 
-.snake {
+.token {
   width: 2rem;
   height: 2rem;
   cursor: grab;
   transition: opacity 0.3s ease;
 }
 
-.snake:active {
+.token:active {
   cursor: grabbing;
 }
 
-.snake img {
+.token img {
   width: 100%;
   height: 100%;
   object-fit: contain;

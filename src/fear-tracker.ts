@@ -1,53 +1,53 @@
 export function setupFearTracker() {
-  const snakes = document.querySelectorAll<HTMLDivElement>('.snake')
-  const inactiveSide = document.querySelector<HTMLDivElement>('.inactive-side')!
-  const activeSide = document.querySelector<HTMLDivElement>('.active-side')!
-  
-  let draggedElement: HTMLDivElement | null = null
-  let dragOffset = { x: 0, y: 0 }
+  const tokens = document.querySelectorAll<HTMLDivElement>(".token");
+  const inactiveSide = document.querySelector<HTMLDivElement>(".inactive-side")!;
+  const activeSide = document.querySelector<HTMLDivElement>(".active-side")!;
 
-  snakes.forEach(snake => {
-    snake.draggable = true
-    snake.style.cursor = 'grab'
+  let draggedElement: HTMLDivElement | null = null;
+  let dragOffset = { x: 0, y: 0 };
 
-    snake.addEventListener('dragstart', (e) => {
-      draggedElement = snake
-      snake.style.cursor = 'grabbing'
-      snake.style.opacity = '0.5'
-      
-      const rect = snake.getBoundingClientRect()
-      dragOffset.x = e.clientX - rect.left
-      dragOffset.y = e.clientY - rect.top
-    })
+  tokens.forEach((token) => {
+    token.draggable = true;
+    token.style.cursor = "grab";
 
-    snake.addEventListener('dragend', () => {
-      snake.style.cursor = 'grab'
-      snake.style.opacity = '1'
-      draggedElement = null
-    })
-  })
+    token.addEventListener("dragstart", (e) => {
+      draggedElement = token;
+      token.style.cursor = "grabbing";
+      token.style.opacity = "0.5";
 
-  function setupDropZone(dropZone: HTMLDivElement, side: 'inactive' | 'active') {
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault()
-      dropZone.style.backgroundColor = '#f0f0f0'
-    })
+      const rect = token.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+    });
 
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.style.backgroundColor = ''
-    })
+    token.addEventListener("dragend", () => {
+      token.style.cursor = "grab";
+      token.style.opacity = "1";
+      draggedElement = null;
+    });
+  });
 
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault()
-      dropZone.style.backgroundColor = ''
-      
+  function setupDropZone(dropZone: HTMLDivElement, side: "inactive" | "active") {
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.style.backgroundColor = "#f0f0f0";
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.style.backgroundColor = "";
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.style.backgroundColor = "";
+
       if (draggedElement) {
-        draggedElement.dataset.side = side
-        dropZone.appendChild(draggedElement)
+        draggedElement.dataset.side = side;
+        dropZone.appendChild(draggedElement);
       }
-    })
+    });
   }
 
-  setupDropZone(inactiveSide, 'inactive')
-  setupDropZone(activeSide, 'active')
+  setupDropZone(inactiveSide, "inactive");
+  setupDropZone(activeSide, "active");
 }
