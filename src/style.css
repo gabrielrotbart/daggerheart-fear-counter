@@ -13,73 +13,79 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  max-width: 100vw;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 600px;
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
+#fear-tracker {
+  display: flex;
 }
 
-.card {
-  padding: 2em;
+.counter-rail {
+  justify-content: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  border-radius: 50px;
+  padding: 5px;
+  min-height: 20px;
+  position: relative;
 }
 
-.read-the-docs {
-  color: #888;
+.inactive-side,
+.active-side {
+  display: flex;
+  gap: 5px;
+  min-height: 60px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 40px;
+  transition: background-color 0.3s ease;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+.inactive-side {
+  flex: 1;
+  justify-content: flex-start;
 }
-button:hover {
-  border-color: #646cff;
+
+.active-side {
+  flex: 1;
+  justify-content: flex-end;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.rail-center {
+  width: 2px;
+  height: 60px;
+  background-color: #666;
+  margin: 0 10px;
+}
+
+.snake {
+  width: 2rem;
+  height: 2rem;
+  cursor: grab;
+  transition: opacity 0.3s ease;
+}
+
+.snake:active {
+  cursor: grabbing;
+}
+
+.snake img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 @media (prefers-color-scheme: light) {
@@ -87,10 +93,12 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
-    color: #747bff;
+
+  .counter-rail {
+    background-color: #e0e0e0;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .rail-center {
+    background-color: #999;
   }
 }

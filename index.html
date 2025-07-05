@@ -1,13 +1,34 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/snake-spiral.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>Daggerheart Fear Tracker</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div id="fear-tracker">
+        <div class="counter-rail">
+          <div class="inactive-side">
+            <div class="snake" data-side="inactive"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="inactive"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="inactive"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="inactive"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="inactive"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="active"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="active"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="active"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="active"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="active"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="active"><img src="/snake-spiral.svg" alt="Snake" /></div>
+            <div class="snake" data-side="active"><img src="/snake-spiral.svg" alt="Snake" /></div>
+          </div>
+          <div class="rail-center"></div>
+          <div class="active-side"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
