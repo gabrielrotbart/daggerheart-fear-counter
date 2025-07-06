@@ -6,7 +6,7 @@
     "title": "Daggerheart fear counter",
     "icon": "/snake-spiral.svg",
     "popover": "/",
-    "height": 200,
-    "width": 600
+    "height": 140,
+    "width": 550
   }
 }
