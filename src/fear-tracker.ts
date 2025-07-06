@@ -1,5 +1,5 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { setTokenPath } from "./settings.ts";
+import { setTokenPath, loadTokenPreferenceFromMetadata } from "./settings.ts";
 
 export function setupFearTracker() {
   // Create the fear tracker content
@@ -28,7 +28,7 @@ export function setupFearTracker() {
     }
     
     // Load saved token preference
-    await loadTokenPreference();
+    await loadTokenPreferenceFromMetadata();
     
     // Set up drag functionality based on role
     setupTokenInteraction();
@@ -197,19 +197,6 @@ export function setupFearTracker() {
   }
 
   updateActiveCount();
-  
-  async function loadTokenPreference() {
-    try {
-      const metadata = await OBR.room.getMetadata();
-      const savedTokenPath = metadata["fear-tracker/token-style"] as string;
-      if (savedTokenPath) {
-        setTokenPath(savedTokenPath);
-        updateAllTokenImages(savedTokenPath);
-      }
-    } catch (error) {
-      console.log("Could not load token preference:", error);
-    }
-  }
   
   function updateAllTokenImages(tokenPath: string) {
     const allTokenImages = document.querySelectorAll<HTMLImageElement>(".token img");

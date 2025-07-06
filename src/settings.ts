@@ -1,3 +1,5 @@
+import OBR from "@owlbear-rodeo/sdk";
+
 // Available token options
 const availableTokens = [
   { name: "Snake Spiral", path: "/snake-spiral.svg" },
@@ -79,13 +81,11 @@ function updateAllTokenImages() {
 
 async function saveTokenPreference(tokenPath: string) {
   try {
-    // Only save if OBR is available and we can access room metadata
-    if (typeof window !== "undefined" && (window as any).OBR) {
-      const OBR = (window as any).OBR;
-      await OBR.room.setMetadata({
-        "fear-tracker/token-style": tokenPath,
-      });
-    }
+    console.log("Saving token preference:", tokenPath);
+    await OBR.room.setMetadata({
+      "fear-tracker/token-style": tokenPath,
+    });
+    console.log("Token preference saved successfully");
   } catch (error) {
     console.log("Could not save token preference:", error);
   }
@@ -96,5 +96,24 @@ export function loadTokenPreference() {
 }
 
 export function setTokenPath(path: string) {
+  console.log("Setting token path to:", path);
   currentTokenPath = path;
+  // Update selection in settings if currently visible
+  updateTokenSelection();
+}
+
+export async function loadTokenPreferenceFromMetadata() {
+  try {
+    const metadata = await OBR.room.getMetadata();
+    const savedTokenPath = metadata["fear-tracker/token-style"] as string;
+    console.log("Loading token preference from metadata:", savedTokenPath);
+    if (savedTokenPath) {
+      setTokenPath(savedTokenPath);
+      updateAllTokenImages();
+      return savedTokenPath;
+    }
+  } catch (error) {
+    console.log("Could not load token preference from metadata:", error);
+  }
+  return null;
 }
