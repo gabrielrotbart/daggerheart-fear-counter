@@ -1,6 +1,5 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
 
   color: rgba(255, 255, 255, 0.87);
@@ -20,13 +19,24 @@ body {
   box-sizing: border-box;
 }
 
+p {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 600px;
   text-align: left;
 }
 
 #fear-tracker {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .counter-rail {
@@ -34,7 +44,7 @@ body {
   flex: 1;
   display: flex;
   align-items: center;
-  background-color: #333;
+  /* background-color: #333; */
   border-radius: 50px;
   padding: 5px;
   min-height: 20px;
@@ -86,9 +96,10 @@ body {
   object-fit: contain;
 }
 
-.token-counter {
+.counter-wrapper {
+  display: flex;
+  gap: 0.5rem;
   text-align: center;
-  margin-top: 0.8rem;
   font-size: 1.2rem;
   font-weight: 600;
 }
