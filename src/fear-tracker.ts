@@ -21,18 +21,17 @@ export function setupFearTracker() {
     token.addEventListener("dragstart", (e) => {
       draggedElement = token;
       token.style.cursor = "grabbing";
-      
+
       // Only apply multi-token grabbing if token is on inactive side
       if (token.dataset.side === "inactive") {
         const inactiveTokens = Array.from(inactiveSide.querySelectorAll<HTMLDivElement>(".token"));
         const tokenIndex = inactiveTokens.indexOf(token);
-        const tokensFromRight = inactiveTokens.length - tokenIndex;
-        
+
         // Grab tokens from the clicked token to the rightmost
         draggedTokens = inactiveTokens.slice(tokenIndex);
-        
+
         // Apply visual feedback to all grabbed tokens
-        draggedTokens.forEach(t => t.style.opacity = "0.5");
+        draggedTokens.forEach((t) => (t.style.opacity = "0.5"));
       } else {
         // Single token grab for active side
         draggedTokens = [token];
@@ -47,7 +46,7 @@ export function setupFearTracker() {
     token.addEventListener("dragend", () => {
       token.style.cursor = "grab";
       // Reset opacity for all dragged tokens
-      draggedTokens.forEach(t => t.style.opacity = "1");
+      draggedTokens.forEach((t) => (t.style.opacity = "1"));
       draggedElement = null;
       draggedTokens = [];
     });
@@ -56,7 +55,10 @@ export function setupFearTracker() {
   function setupDropZone(dropZone: HTMLDivElement, side: "inactive" | "active") {
     dropZone.addEventListener("dragover", (e) => {
       e.preventDefault();
-      dropZone.style.backgroundColor = "#f0f0f0";
+      // Only highlight the target zone, not the source zone
+      if (draggedElement && draggedElement.dataset.side !== side) {
+        dropZone.style.backgroundColor = "#f0f0f0";
+      }
     });
 
     dropZone.addEventListener("dragleave", () => {
@@ -69,7 +71,7 @@ export function setupFearTracker() {
 
       if (draggedElement && draggedTokens.length > 0) {
         // Move all dragged tokens to the drop zone
-        draggedTokens.forEach(token => {
+        draggedTokens.forEach((token) => {
           token.dataset.side = side;
           dropZone.appendChild(token);
         });
