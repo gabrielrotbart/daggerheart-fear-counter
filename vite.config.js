@@ -2,9 +2,5 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  server: {
-    cors: {
-      origin: "https://www.owlbear.rodeo",
-    },
-  },
-}); 
+  server: { host: "0.0.0.0", cors: true }
+});
