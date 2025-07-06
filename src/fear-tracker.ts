@@ -1,3 +1,5 @@
+import OBR from "@owlbear-rodeo/sdk";
+
 export function setupFearTracker() {
   const tokens = document.querySelectorAll<HTMLDivElement>(".token");
   const inactiveSide = document.querySelector<HTMLDivElement>(".inactive-side")!;
@@ -8,10 +10,67 @@ export function setupFearTracker() {
   let draggedTokens: HTMLDivElement[] = [];
   let dragOffset = { x: 0, y: 0 };
 
+  // Initialize OBR integration
+  OBR.onReady(() => {
+    // Load saved state from room metadata
+    loadFearState();
+    
+    // Listen for state changes from other players
+    OBR.room.onMetadataChange((metadata) => {
+      if (metadata["fear-tracker/active-count"]) {
+        updateDisplayFromState(metadata["fear-tracker/active-count"] as number);
+      }
+    });
+  });
+
+  async function loadFearState() {
+    try {
+      const metadata = await OBR.room.getMetadata();
+      const savedCount = metadata["fear-tracker/active-count"] as number;
+      if (savedCount !== undefined) {
+        updateDisplayFromState(savedCount);
+      }
+    } catch (error) {
+      console.error("Error loading fear state:", error);
+    }
+  }
+
+  async function saveFearState(activeCount: number) {
+    try {
+      await OBR.room.setMetadata({
+        "fear-tracker/active-count": activeCount
+      });
+    } catch (error) {
+      console.error("Error saving fear state:", error);
+    }
+  }
+
+  function updateDisplayFromState(activeCount: number) {
+    // Reset all tokens to inactive
+    tokens.forEach(token => {
+      token.dataset.side = "inactive";
+      inactiveSide.appendChild(token);
+    });
+
+    // Move the specified number of tokens to active side
+    const tokensArray = Array.from(tokens);
+    for (let i = 0; i < Math.min(activeCount, tokensArray.length); i++) {
+      const token = tokensArray[i];
+      token.dataset.side = "active";
+      activeSide.appendChild(token);
+    }
+
+    activeCountElement.textContent = activeCount.toString();
+  }
+
   function updateActiveCount() {
     const activeTokens = document.querySelectorAll('.token[data-side="active"]');
-    console.log("activeTokens :>> ", activeTokens.length.toString());
-    activeCountElement.textContent = activeTokens.length.toString();
+    const count = activeTokens.length;
+    console.log("activeTokens :>> ", count.toString());
+    activeCountElement.textContent = count.toString();
+    
+    // Save state to room metadata
+    saveFearState(count);
   }
 
   tokens.forEach((token) => {
