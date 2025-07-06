@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "author": "Gabriel",
   "manifest_version": 1,
+  "homepage_url": "https://github.com/gabrielrotbart/daggerheart-fear-counter",
   "action": {
     "title": "Daggerheart Fear Counter",
     "icon": "/snake-spiral.svg",
