@@ -5,6 +5,7 @@ export function setupFearTracker() {
   const activeCountElement = document.querySelector<HTMLSpanElement>("#active-count")!;
 
   let draggedElement: HTMLDivElement | null = null;
+  let draggedTokens: HTMLDivElement[] = [];
   let dragOffset = { x: 0, y: 0 };
 
   function updateActiveCount() {
@@ -20,7 +21,23 @@ export function setupFearTracker() {
     token.addEventListener("dragstart", (e) => {
       draggedElement = token;
       token.style.cursor = "grabbing";
-      token.style.opacity = "0.5";
+      
+      // Only apply multi-token grabbing if token is on inactive side
+      if (token.dataset.side === "inactive") {
+        const inactiveTokens = Array.from(inactiveSide.querySelectorAll<HTMLDivElement>(".token"));
+        const tokenIndex = inactiveTokens.indexOf(token);
+        const tokensFromRight = inactiveTokens.length - tokenIndex;
+        
+        // Grab tokens from the clicked token to the rightmost
+        draggedTokens = inactiveTokens.slice(tokenIndex);
+        
+        // Apply visual feedback to all grabbed tokens
+        draggedTokens.forEach(t => t.style.opacity = "0.5");
+      } else {
+        // Single token grab for active side
+        draggedTokens = [token];
+        token.style.opacity = "0.5";
+      }
 
       const rect = token.getBoundingClientRect();
       dragOffset.x = e.clientX - rect.left;
@@ -29,8 +46,10 @@ export function setupFearTracker() {
 
     token.addEventListener("dragend", () => {
       token.style.cursor = "grab";
-      token.style.opacity = "1";
+      // Reset opacity for all dragged tokens
+      draggedTokens.forEach(t => t.style.opacity = "1");
       draggedElement = null;
+      draggedTokens = [];
     });
   });
 
@@ -48,9 +67,12 @@ export function setupFearTracker() {
       e.preventDefault();
       dropZone.style.backgroundColor = "";
 
-      if (draggedElement) {
-        draggedElement.dataset.side = side;
-        dropZone.appendChild(draggedElement);
+      if (draggedElement && draggedTokens.length > 0) {
+        // Move all dragged tokens to the drop zone
+        draggedTokens.forEach(token => {
+          token.dataset.side = side;
+          dropZone.appendChild(token);
+        });
         updateActiveCount();
       }
     });
