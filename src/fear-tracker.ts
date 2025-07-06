@@ -1,4 +1,5 @@
 import OBR from "@owlbear-rodeo/sdk";
+import { setTokenPath } from "./settings.ts";
 
 export function setupFearTracker() {
   // Create the fear tracker content
@@ -25,6 +26,10 @@ export function setupFearTracker() {
       if (!settings) return;
       settings.style.visibility = "visible";
     }
+    
+    // Load saved token preference
+    await loadTokenPreference();
+    
     // Set up drag functionality based on role
     setupTokenInteraction();
 
@@ -35,6 +40,11 @@ export function setupFearTracker() {
     OBR.room.onMetadataChange((metadata) => {
       if (metadata["fear-tracker/active-count"]) {
         updateDisplayFromState(metadata["fear-tracker/active-count"] as number);
+      }
+      if (metadata["fear-tracker/token-style"]) {
+        const tokenPath = metadata["fear-tracker/token-style"] as string;
+        setTokenPath(tokenPath);
+        updateAllTokenImages(tokenPath);
       }
     });
   });
@@ -187,6 +197,27 @@ export function setupFearTracker() {
   }
 
   updateActiveCount();
+  
+  async function loadTokenPreference() {
+    try {
+      const metadata = await OBR.room.getMetadata();
+      const savedTokenPath = metadata["fear-tracker/token-style"] as string;
+      if (savedTokenPath) {
+        setTokenPath(savedTokenPath);
+        updateAllTokenImages(savedTokenPath);
+      }
+    } catch (error) {
+      console.log("Could not load token preference:", error);
+    }
+  }
+  
+  function updateAllTokenImages(tokenPath: string) {
+    const allTokenImages = document.querySelectorAll<HTMLImageElement>(".token img");
+    
+    allTokenImages.forEach(img => {
+      img.src = tokenPath;
+    });
+  }
 }
 
 function createFearTrackerContent() {
