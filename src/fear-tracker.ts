@@ -17,6 +17,11 @@ export function setupFearTracker() {
     const role = await OBR.player.getRole();
     isGM = role === "GM";
 
+    if (isGM) {
+      const settings = document.querySelector<HTMLDivElement>(".settings");
+      if (!settings) return;
+      settings.style.visibility = "visible";
+    }
     // Set up drag functionality based on role
     setupTokenInteraction();
 
@@ -79,7 +84,6 @@ export function setupFearTracker() {
   function updateActiveCount() {
     const activeTokens = document.querySelectorAll('.token[data-side="active"]');
     const count = activeTokens.length;
-    console.log("activeTokens :>> ", count.toString());
     activeCountElement.textContent = count.toString();
 
     // Save state to room metadata

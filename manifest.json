@@ -1,12 +1,13 @@
 {
-  "name": "Daggerheart fear counter",
+  "name": "Daggerheart Fear Counter",
   "version": "0.0.1",
+  "author": "Gabriel",
   "manifest_version": 1,
   "action": {
-    "title": "Daggerheart fear counter",
+    "title": "Daggerheart Fear Counter",
     "icon": "/snake-spiral.svg",
     "popover": "/",
-    "height": 140,
+    "height": 150,
     "width": 550
   }
 }
