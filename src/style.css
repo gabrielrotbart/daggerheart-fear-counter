@@ -88,17 +88,14 @@ body {
   object-fit: contain;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+.token-counter {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
 
-  .counter-rail {
-    background-color: #e0e0e0;
-  }
-
-  .rail-center {
-    background-color: #999;
-  }
+#active-count {
+  color: #ff6b6b;
+  font-weight: 700;
 }
