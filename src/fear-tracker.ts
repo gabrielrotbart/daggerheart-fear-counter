@@ -9,12 +9,20 @@ export function setupFearTracker() {
   let draggedElement: HTMLDivElement | null = null;
   let draggedTokens: HTMLDivElement[] = [];
   let dragOffset = { x: 0, y: 0 };
+  let isGM = false;
 
   // Initialize OBR integration
-  OBR.onReady(() => {
+  OBR.onReady(async () => {
+    // Check if player is GM
+    const role = await OBR.player.getRole();
+    isGM = role === "GM";
+
+    // Set up drag functionality based on role
+    setupTokenInteraction();
+
     // Load saved state from room metadata
     loadFearState();
-    
+
     // Listen for state changes from other players
     OBR.room.onMetadataChange((metadata) => {
       if (metadata["fear-tracker/active-count"]) {
@@ -36,9 +44,14 @@ export function setupFearTracker() {
   }
 
   async function saveFearState(activeCount: number) {
+    // Only GMs can save state changes
+    if (!isGM) {
+      return;
+    }
+
     try {
       await OBR.room.setMetadata({
-        "fear-tracker/active-count": activeCount
+        "fear-tracker/active-count": activeCount,
       });
     } catch (error) {
       console.error("Error saving fear state:", error);
@@ -47,7 +60,7 @@ export function setupFearTracker() {
 
   function updateDisplayFromState(activeCount: number) {
     // Reset all tokens to inactive
-    tokens.forEach(token => {
+    tokens.forEach((token) => {
       token.dataset.side = "inactive";
       inactiveSide.appendChild(token);
     });
@@ -68,58 +81,75 @@ export function setupFearTracker() {
     const count = activeTokens.length;
     console.log("activeTokens :>> ", count.toString());
     activeCountElement.textContent = count.toString();
-    
+
     // Save state to room metadata
     saveFearState(count);
   }
 
-  tokens.forEach((token) => {
-    token.draggable = true;
-    token.style.cursor = "grab";
+  function setupTokenInteraction() {
+    // Add visual indicator for player role
 
-    token.addEventListener("dragstart", (e) => {
-      draggedElement = token;
-      token.style.cursor = "grabbing";
+    tokens.forEach((token) => {
+      if (isGM) {
+        // GM can drag tokens
+        token.draggable = true;
+        token.style.cursor = "grab";
 
-      // Only apply multi-token grabbing if token is on inactive side
-      if (token.dataset.side === "inactive") {
-        const inactiveTokens = Array.from(inactiveSide.querySelectorAll<HTMLDivElement>(".token"));
-        const tokenIndex = inactiveTokens.indexOf(token);
+        token.addEventListener("dragstart", (e) => {
+          draggedElement = token;
+          token.style.cursor = "grabbing";
 
-        // Grab tokens from the clicked token to the rightmost
-        draggedTokens = inactiveTokens.slice(tokenIndex);
+          // Only apply multi-token grabbing if token is on inactive side
+          if (token.dataset.side === "inactive") {
+            const inactiveTokens = Array.from(inactiveSide.querySelectorAll<HTMLDivElement>(".token"));
+            const tokenIndex = inactiveTokens.indexOf(token);
 
-        // Apply visual feedback to all grabbed tokens
-        draggedTokens.forEach((t) => {
-          t.style.opacity = "0.5";
-          const img = t.querySelector("img");
-          if (img) img.style.filter = "brightness(0) saturate(100%) invert(91%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(91%)";
+            // Grab tokens from the clicked token to the rightmost
+            draggedTokens = inactiveTokens.slice(tokenIndex);
+
+            // Apply visual feedback to all grabbed tokens
+            draggedTokens.forEach((t) => {
+              t.style.opacity = "0.5";
+              const img = t.querySelector("img");
+              if (img) img.style.filter = "brightness(0) saturate(100%) invert(91%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(91%)";
+            });
+          } else {
+            // Single token grab for active side
+            draggedTokens = [token];
+            token.style.opacity = "0.5";
+            const img = token.querySelector("img");
+            if (img) img.style.filter = "brightness(0) saturate(100%) invert(91%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(91%)";
+          }
+
+          const rect = token.getBoundingClientRect();
+          dragOffset.x = e.clientX - rect.left;
+          dragOffset.y = e.clientY - rect.top;
+        });
+
+        token.addEventListener("dragend", () => {
+          token.style.cursor = "grab";
+          // Reset opacity and filter for all dragged tokens
+          draggedTokens.forEach((t) => {
+            t.style.opacity = "1";
+            const img = t.querySelector("img");
+            if (img) img.style.filter = "";
+          });
+          draggedElement = null;
+          draggedTokens = [];
         });
       } else {
-        // Single token grab for active side
-        draggedTokens = [token];
-        token.style.opacity = "0.5";
-        const img = token.querySelector("img");
-        if (img) img.style.filter = "brightness(0) saturate(100%) invert(91%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(91%)";
+        // Players cannot drag tokens - make them non-interactive
+        token.draggable = false;
+        token.style.cursor = "default";
+        token.style.opacity = "0.8";
       }
-
-      const rect = token.getBoundingClientRect();
-      dragOffset.x = e.clientX - rect.left;
-      dragOffset.y = e.clientY - rect.top;
     });
 
-    token.addEventListener("dragend", () => {
-      token.style.cursor = "grab";
-      // Reset opacity and filter for all dragged tokens
-      draggedTokens.forEach((t) => {
-        t.style.opacity = "1";
-        const img = t.querySelector("img");
-        if (img) img.style.filter = "";
-      });
-      draggedElement = null;
-      draggedTokens = [];
-    });
-  });
+    if (isGM) {
+      setupDropZone(inactiveSide, "inactive");
+      setupDropZone(activeSide, "active");
+    }
+  }
 
   function setupDropZone(dropZone: HTMLDivElement, side: "inactive" | "active") {
     dropZone.addEventListener("dragover", (e) => {
@@ -148,9 +178,6 @@ export function setupFearTracker() {
       }
     });
   }
-
-  setupDropZone(inactiveSide, "inactive");
-  setupDropZone(activeSide, "active");
 
   updateActiveCount();
 }
