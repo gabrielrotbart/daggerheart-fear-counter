@@ -31,11 +31,17 @@ export function setupFearTracker() {
         draggedTokens = inactiveTokens.slice(tokenIndex);
 
         // Apply visual feedback to all grabbed tokens
-        draggedTokens.forEach((t) => (t.style.opacity = "0.5"));
+        draggedTokens.forEach((t) => {
+          t.style.opacity = "0.5";
+          const img = t.querySelector("img");
+          if (img) img.style.filter = "brightness(0) saturate(100%) invert(91%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(91%)";
+        });
       } else {
         // Single token grab for active side
         draggedTokens = [token];
         token.style.opacity = "0.5";
+        const img = token.querySelector("img");
+        if (img) img.style.filter = "brightness(0) saturate(100%) invert(91%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(96%) contrast(91%)";
       }
 
       const rect = token.getBoundingClientRect();
@@ -45,8 +51,12 @@ export function setupFearTracker() {
 
     token.addEventListener("dragend", () => {
       token.style.cursor = "grab";
-      // Reset opacity for all dragged tokens
-      draggedTokens.forEach((t) => (t.style.opacity = "1"));
+      // Reset opacity and filter for all dragged tokens
+      draggedTokens.forEach((t) => {
+        t.style.opacity = "1";
+        const img = t.querySelector("img");
+        if (img) img.style.filter = "";
+      });
       draggedElement = null;
       draggedTokens = [];
     });
