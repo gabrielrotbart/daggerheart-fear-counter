@@ -1,6 +1,9 @@
 import OBR from "@owlbear-rodeo/sdk";
 
 export function setupFearTracker() {
+  // Create the fear tracker content
+  createFearTrackerContent();
+
   const tokens = document.querySelectorAll<HTMLDivElement>(".token");
   const inactiveSide = document.querySelector<HTMLDivElement>(".inactive-side")!;
   const activeSide = document.querySelector<HTMLDivElement>(".active-side")!;
@@ -184,4 +187,40 @@ export function setupFearTracker() {
   }
 
   updateActiveCount();
+}
+
+function createFearTrackerContent() {
+  const mainView = document.querySelector("#main-view")!;
+
+  mainView.innerHTML = `
+    <div class="tracker-view">
+      <div id="fear-tracker">
+        <div class="counter-rail">
+          <div class="inactive-side">
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+            <div class="token" data-side="inactive"><img src="/snake-spiral.svg" alt="token" /></div>
+          </div>
+          <div class="rail-center"></div>
+          <div class="active-side"></div>
+        </div>
+      </div>
+      <div class="counter-wrapper">
+        <p>Fear:</p>
+        <p id="active-count">7</p>
+      </div>
+      <div class="settings">
+        <img src="/settings.svg" alt="settings" class="settings-cog" onclick="showSettings()" />
+      </div>
+    </div>
+  `;
 }
